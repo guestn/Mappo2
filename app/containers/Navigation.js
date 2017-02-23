@@ -25,6 +25,9 @@ const {
 
 import * as timeFunctions from '../lib/timeFunctions'
 
+import IdleTimerManager from 'react-native-idle-timer';
+
+
 class Navigation extends Component {
 	 constructor(props, context) {
     super(props, context)
@@ -35,11 +38,19 @@ class Navigation extends Component {
         	{key: 'HomePage'}, 
         	{key: 'SettingsPage'},
         	{key: 'ArchivePage'}
-        ], // Starts with only one route.
+        ], 
       },
 	  }
 		this._onNavigationChange = this._onNavigationChange.bind(this);
   }
+  
+  componentWillMount() {
+  	IdleTimerManager.setIdleTimerDisabled(true);
+	}
+
+	componentWillUnmount() {
+ 	 IdleTimerManager.setIdleTimerDisabled(false);
+	}
 
 	_onNavigationChange(type) {
   // Extract the navigationState from the current state:
@@ -102,7 +113,6 @@ class MyVerySimpleNavigator extends Component {
   // Here you could choose to render a different component for each route, but
   // we'll keep it simple.
   _renderScene(sceneProps) {
-	  console.log(sceneProps)
 	  if (sceneProps.scene.index === 0) {
 
 		  return (
@@ -111,6 +121,7 @@ class MyVerySimpleNavigator extends Component {
 		      onPushRoute={(val) => this._onPushRoute(val)}
 		      onPopRoute={() => this._onPushRoute(0)}
 		      onExit={this.props.onExit}
+		      {...this.props}
 		    />
 			);
 		}
@@ -120,7 +131,9 @@ class MyVerySimpleNavigator extends Component {
 		    	route={sceneProps.scene.route}
 		      onPushRoute={(val) => this._onPushRoute(val)}
 		      onPopRoute={() => this._onPushRoute(0)}
-		      onExit={this.props.onExit}/>
+		      onExit={this.props.onExit}
+		      {...this.props}
+				/>
 			);	
 		}
 		if (sceneProps.scene.index === 2) {

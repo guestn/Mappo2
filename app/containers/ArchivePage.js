@@ -13,7 +13,6 @@ import { connect } from 'react-redux';
 
 import MenuButton from '../components/MenuButton';
 
-
 import * as timeFunctions from '../lib/timeFunctions'
 
 class ArchivePage extends Component {
@@ -25,28 +24,25 @@ class ArchivePage extends Component {
 	  }
   }
 	
-	searchPressed() {
+	onSearchPressed = () => {
 		this.setState({
 			searching: true
 		})
-		this.props.fetchItems(this.state.textInput).then( (res) => {
+		this.props.fetchItemsFromArchive(this.state.textInput).then((res) => {
       this.setState({searching: false })
     });
-		
 	}
 	
-	getArrayFromObject() {
+	getArrayFromObject = () => {
 		//magic ES6 to get array from obj.
 		let obj = Object.keys(this.props.searchedItems).map( key => this.props.searchedItems[key]);
 		return obj	
 	}
 
 	render() {
-		console.log(this.props.searchedItems)
 		return (
 			<View style={S.container}>
-				
-
+			
 				<Text>ArchivePage</Text>
 				<Text style={S.row}>
           Route: {this.props.route.key}
@@ -59,7 +55,7 @@ class ArchivePage extends Component {
 						placeholder="Enter a movie or TV programme"
 						onChangeText={(textInput) => this.setState({textInput})} 
 					/>
-					<TouchableHighlight style={S.button} onPress={() => this.searchPressed()}>
+					<TouchableHighlight style={S.button} onPress={() => this.onSearchPressed()}>
 						<Text>Search</Text>
 					</TouchableHighlight>
 				</View>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
 	Text,
 	Image,
-	TouchableHighlight
+	TouchableOpacity
 } from 'react-native';
 import S from '../styles/Styles';
 
@@ -10,15 +10,28 @@ import { connect } from 'react-redux';
 
 class MenuButton extends Component {
   render() {
+	  let icon = '';
+	  
+	  switch(this.props.icon) {
+			case 'settings': icon = require('../assets/settings-icon.png');
+				break;
+/*
+			case 'archive': icon = require('../assets/archive-icon.png');
+				break;
+			case 'back': icon = require('../assets/back-icon.png');
+*/
+	  }
+
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         style={[S.menuButton, this.props.position] }
         underlayColor="#D0D0D0"
         onPress={this.props.onPress}>
-        <Text>
-          {this.props.text}
-        </Text>
-      </TouchableHighlight>
+        { this.props.icon ? 
+	        <Image style={S.menuIcon} source={icon}/> :
+					<Text>{this.props.text}</Text>
+			}
+      </TouchableOpacity>
     );
   }
 }

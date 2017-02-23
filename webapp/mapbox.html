@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <script src='moment-with-locales.js'></script>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/3.6.10/firebase.js'></script>
+    
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
+
+
+    <style>
+        body { margin:0; padding:0;    font-family: 'Open Sans', sans-serif;
+    font-weight: normal; }
+        #map { position:relative; top:0; height: 300px; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+Archive items count: <span id="count">...</span>
+<select id="selector">
+</select>
+
+<div id="info"></div>
+
+<script>
+(function(){
+  // Initialize Firebase
+  // TODO: Replace with your project's customized code snippet
+  var config = {
+    apiKey: "AIzaSyAyQqjZ_75qKv056dlKtec_88cwiv7EQlo",
+    authDomain: "mappo-75c1e.firebaseapp.com",
+    databaseURL: "https://mappo-75c1e.firebaseio.com",
+    storageBucket: "mappo-75c1e.appspot.com",
+    messagingSenderId: "527781835434"
+  };
+
+  
+  firebase.initializeApp(config);
+	var database = firebase.database();
+	
+	var selectedTrack;
+	
+	database.ref('Archive').once('value', function(snap) {
+  
+    var archivedTracks = snap.val();
+    
+    var archivedTracksArr = [];
+    for( var i in archivedTracks ) {
+    	archivedTracksArr.push(archivedTracks[i])
+		}
+		console.log('archivedTracksArr',archivedTracksArr)
+		archivedTracksArr.sort()
+
+		var count = document.getElementById('count')
+		count.innerHTML = archivedTracksArr.length;
+
+		var selector = document.getElementById('selector')
+		for (var i =0; i < archivedTracksArr.length; i++) {
+			var option = document.createElement('option');
+			option.text = 'Track ' + i;
+			option.value = i;
+			selector.appendChild(option);
+		}
+		
+		selector.addEventListener('change', function(e){
+			selectedTrack = e.target.value
+			  parseData(archivedTracksArr[selectedTrack]);
+				createMetaData(archivedTracksArr[selectedTrack])
+		})
+
+		// initialize with lastest track;
+		selectedTrack = archivedTracksArr.length -1;
+		parseData(archivedTracksArr[selectedTrack]);
+		createMetaData(archivedTracksArr[selectedTrack])
+		selector.value = selectedTrack;
+
+
+
+	})
+	
+	var parsedCurrentTrack = [];
+	var metaData = {};
+
+
+	function parseData(currentTrack) {
+		parsedCurrentTrack = []
+		for( var i in currentTrack ) {
+    	parsedCurrentTrack.push([currentTrack[i].point.coords.longitude, currentTrack[i].point.coords.latitude])
+		}
+		console.log(parsedCurrentTrack);
+		drawMap(parsedCurrentTrack);
+	}
+
+	function createMetaData(archivedTrack) {
+		var time = Object.keys(archivedTrack);
+		time.sort()
+			
+		var endTime = moment(parseInt(time[time.length-1]))
+		var startTime = moment(parseInt(time[0]))
+
+		var duration = moment.duration(endTime.diff(startTime)).as('milliseconds')
+		duration = moment.utc(duration).format("HH:mm:ss")
+		
+		
+		metaData = {
+			start : startTime.format(),
+			end : endTime.format(),
+			duration : duration
+		}
+		
+		console.log(metaData)
+		var el = document.getElementById('info');
+		el.innerHTML = '<div>Start: ' + metaData.start + '</div><div>End: ' + metaData.end + '</div><div>Duration: ' + metaData.duration + '</div>';
+		
+		
+		
+	}
+	
+	function str_pad_left(string,pad,length) {
+    return (new Array(length+1).join(pad)+string).slice(-length);
+	}
+	
+	function unixTimeToString(unixTime) {
+		var dateObj = new Date(unixTime);
+		var year = dateObj.getUTCFullYear();
+		var month = dateObj.getUTCMonth() + 1;
+		var day = dateObj.getUTCDate();
+		return day + '-' + month + '-' + year;
+	}
+
+
+
+
+
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ3Vlc3RuIiwiYSI6ImNpaTE4azhoYTAwM3h0OG0wanpzdzB2ZmQifQ.lk0cyyp2tuQDw6wHsumXmg';
+
+function drawMap(parsedCurrentTrack){
+	
+	document.getElementById('map').innerHTML = '';
+	var mapcenter = parsedCurrentTrack[0];//[-122.2690824141002, 38.30323801845154];
+	var coords1 = [-87.750313, 43.760461];
+	 
+	var map = new mapboxgl.Map({
+	    container: 'map',
+	    style: 'mapbox://styles/mapbox/dark-v9',
+	    center: mapcenter,
+	    pitch: 0, // pitch in degrees
+	    bearing: -0, // bearing in degrees
+	    zoom: 14
+	});
+	
+	map.on('load', function () {
+		
+		console.log(map.getLayer("route"));
+		(map.getLayer("route") != undefined) ? map.removeLayer("route") : null;
+		
+		map.addLayer({
+	        "id": "route",
+	        "type": "line",
+	        "source": {
+	            "type": "geojson",
+	            "data": {
+	                "type": "Feature",
+	                "properties": {},
+	                "geometry": {
+	                    "type": "LineString",
+	                    "coordinates": parsedCurrentTrack/*
+	[
+	                        [-122.48369693756104, 37.83381888486939],
+	                        [-122.48348236083984, 37.83317489144141],
+	                        [-122.48339653015138, 37.83270036637107],
+	                        [-122.48356819152832, 37.832056363179625],
+	                        [-122.48404026031496, 37.83114119107971],
+	                        [-122.48404026031496, 37.83049717427869],
+	                        [-122.48348236083984, 37.829920943955045],
+	                        [-122.48356819152832, 37.82954808664175],
+	                        [-122.48507022857666, 37.82944639795659],
+	                        [-122.48610019683838, 37.82880236636284],
+	                        [-122.48695850372314, 37.82931081282506],
+	                        [-122.48700141906738, 37.83080223556934],
+	                        [-122.48751640319824, 37.83168351665737],
+	                        [-122.48803138732912, 37.832158048267786],
+	                        [-122.48888969421387, 37.83297152392784],
+	                        [-122.48987674713133, 37.83263257682617],
+	                        [-122.49043464660643, 37.832937629287755],
+	                        [-122.49125003814696, 37.832429207817725],
+	                        [-122.49163627624512, 37.832564787218985],
+	                        [-122.49223709106445, 37.83337825839438],
+	                        [-122.49378204345702, 37.83368330777276]
+	
+	                    ]*/
+	                }
+	            }
+	        },
+	        "layout": {
+	            "line-join": "round",
+	            "line-cap": "round"
+	        },
+	        "paint": {
+	            "line-color": "#ffff00",
+	            "line-width": 8
+	        }
+	    });
+	
+	    
+	});	    
+}
+
+})()
+</script>
+
+</body>
+</html>

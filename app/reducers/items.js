@@ -21,3 +21,30 @@ export const itemCount = createReducer(0,{
 	}
 */
 })
+
+
+
+export const tracklogPoint = createReducer({}, {
+	[types.RECORD_TRACKLOG_POINT](state, action) {
+		let newState = {};
+		console.log('ACTION',action.items)
+
+		return action.items;
+	}
+})
+
+
+export const currentTracklog = createReducer({}, {
+	[types.SET_CURRENT_TRACKLOG](state, action) {
+		console.log('state', state)
+		return Object.assign({}, state,
+			action.items
+		)
+	},
+	[types.CLEAR_CURRENT_TRACKLOG](state, action) {
+		console.log('clear', state)
+		return Object.assign({}, state,
+			null
+		)
+	}
+})

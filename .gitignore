@@ -55,3 +55,4 @@ fastlane/screenshots
 
 # specific files
 app/firebaseConfig.js
+app/config.js
