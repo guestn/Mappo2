@@ -141,21 +141,13 @@ class Home extends Component {
     });
   }
 
-  handleRecorderStartClick = () => {
+  handleRecorderClick = () => {
 	  console.log('RECORDING')
 	  this.setState({
-		  recording: true
+		  recording: !this.state.recording
 	  })
   }
-  
-  handleRecorderStopClick = () => {
-	  console.log('Stopped RECORDING')
-	  this.setState({
-		  recording: false
-	  })
-		//clearInterval(this.timer);
-  }
-  
+    
   handleClearClick = () => {
 	  AlertIOS.alert(
 		 'Clear',
@@ -191,56 +183,58 @@ class Home extends Component {
 		return (
 			<View style={S.homeContainer}>
 
-			<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
-			
-			<View style={[S.altitude, S.abs]}>
-				<Text style={[S.whiteText, S.bigText]}>{altitude}</Text>
-			</View>
-			<View style={[S.heading, S.abs]}>
-				<Image style={[S.headingIcon, {transform: [{ rotate: heading + 'deg'}]}]} source={require('../assets/heading-icon.png')}/>
-			</View>
-			
-			<View style={[S.abs, S.recorderContainer]}>
-				<TouchableOpacity style={S.recordButton} onPress={this.handleRecorderStartClick}>
-					<Text style={S.whiteText}>
-						RECORD
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={S.recordButton} onPress={this.handleRecorderStopClick}>
-					<Text style={S.whiteText}>
-						STOP
-					</Text>
-				</TouchableOpacity>
-				<Text style={{color:'red'}}>REC: {(this.state.recording).toString()}</Text>
-			</View>
-			
-			<View style={[S.abs, S.homepageTest]}>
-				<TouchableOpacity style={S.recordButton} onPress={this.handleClearClick}>
-					<Text style={S.whiteText}>
-						CLEAR
-					</Text>
-				</TouchableOpacity>
-				{ (this.state.initialPosition != null) ?
-					<View>
-						<Text style={S.whiteText}>{this.state.initialPosition.coords.latitude}</Text>
-						<Text style={S.whiteText}>{this.state.initialPosition.coords.longitude}</Text>
-						<Text style={S.whiteText}>{this.state.initialPosition.coords.heading}</Text>
-					</View> :
-					null
-				}
-			</View>
-			
-      <MenuButton
+				<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
+				
+
+
+				
+				<View style={[S.abs, S.recorderContainer]}>
+					<TouchableOpacity style={S.recordButton} onPress={this.handleRecorderClick}>
+							{ this.state.recording ? 
+								<Image style={{width:80, height:40}} source={require('../assets/recordstop-icon.png')}/> : 
+								<Image style={{width:80, height:40}} source={require('../assets/record-icon.png')}/>}
+ 					</TouchableOpacity>
+				</View>
+				
+				<View style={[S.abs, S.homepageTest]}>
+					<TouchableOpacity style={S.recordButton} onPress={this.handleClearClick}>
+						<Text style={S.whiteText}>
+							CLEAR
+						</Text>
+					</TouchableOpacity>
+					{ (this.state.initialPosition != null) ?
+						<View>
+							<Text style={S.whiteText}>{this.state.initialPosition.coords.latitude}</Text>
+							<Text style={S.whiteText}>{this.state.initialPosition.coords.longitude}</Text>
+							<Text style={S.whiteText}>{this.state.initialPosition.coords.heading}</Text>
+						</View> :
+						null
+					}
+				</View>
+				
+	      <MenuButton
           text="Settings"
-          position={{top:20,right:0}}
+          position={{top:20,right:10}}
           icon="settings"
           onPress={() => this.props.onPushRoute(1)}
-        />
-        <MenuButton
-          text="Archive"
-          position={{top:20,left:0}}
-          onPress={() => this.props.onPushRoute(2)}
-        />
+	      />
+
+	        
+	      <View style={[S.abs, S.homepageBottomDisplay]}>
+	        <View style={[S.altitude]}>
+	        	<Text style={[S.whiteText, S.text16]}>ALT.</Text>
+						<Text style={[S.whiteText, S.text40, S.alignRight]}>{altitude}</Text>
+					</View>
+	        <View style={[S.altitude]}>
+	        	<Text style={[S.whiteText, S.text16]}>HOME</Text>
+						<Text style={[S.whiteText, S.text40, S.alignRight]}>46.5</Text>
+					</View>
+					<View style={[S.heading]}>
+						<Image style={[S.headingIcon, {transform: [{ rotate: heading + 'deg'}]}]} source={require('../assets/heading-icon.png')}/>
+					</View>
+	      </View>
+			
+				
 			</View>
 		)
 	}

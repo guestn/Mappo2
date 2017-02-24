@@ -2,26 +2,88 @@ import {
 	StyleSheet
 } from 'react-native';
 
+const darkGrey = '#4D4D4D'
+const midGrey = '#666'
+const orange = '#FF4625';
+const homeInfoBg = '#000';
+const SHDW_DIMS  = {
+		   height: 1,
+		   width: 0
+    }
+
 const S = StyleSheet.create({
   container: {
 	  position:'relative',
     flex: 1,
-    justifyContent: 'center',
+    //justifyContent: 'center',
     //alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-    padding:20,
-    paddingTop: 100
+    backgroundColor: midGrey,
+    padding:0,
+  },
+  innerContainer: {
+	  padding: 20
   },
   abs: {
 	  position:'absolute'
   },
   
+// TEXT //
+	whiteText: {
+		color: '#fff',
+		fontFamily: 'Orkney-Regular',
+	},
+	bigText: {
+		fontSize: 30,
+		alignSelf: 'flex-end'
+	},
+	text16: {
+		fontSize: 16,
+		fontFamily: 'Orkney-Regular',
+		bottom: -8
+	},
+	text20: {
+		fontSize: 20,
+		fontFamily: 'Orkney-Regular',
+		bottom: -8
+	},
+	text30: {
+		fontSize: 30,
+		fontFamily: 'Orkney-Regular',
+		bottom: -6
+	},
+	text40: {
+		fontSize: 40,
+		fontFamily: 'Orkney-Regular',
+		bottom: -8
+	},
+	alignRight: {
+		textAlign: 'right'
+	},
+	
+  
 // MENU //
 
-  menuButton: {
+	menuBar: {
+		backgroundColor: darkGrey,
+		height: 80,
+		paddingTop:20,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	menuText: {
+		color: 'white',
+		fontSize: 24,
+		fontFamily: 'Orkney-Regular',
+	},
+  largeMenuButton: {
 	  position:'absolute',
 	  padding:10, 
 	  backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  smallMenuButton: {
+	  position:'absolute',
+	  padding:0,
+	  backgroundColor: 'transparent',
   },
 	menuIcon : {
 		width: 48,
@@ -41,35 +103,37 @@ const S = StyleSheet.create({
   },
   
   recorderContainer: {
+	  flexDirection:'row',
+	  alignItems: 'center',
 	  top: 20,
 	  left: 100,
-	  padding: 20,
-	  borderWidth: 3,
+	  padding: 10,
+	  borderWidth: 0,
 	  borderColor: '#fff',
 	  backgroundColor: 'transparent',
   },
   recordButton: {
-	  borderWidth:1,
+	  borderWidth:0,
 	  borderColor: 'green',
-	  padding: 10,
+	  padding: 0,
   },
-  
+ 
   homepageTest: {
 	  top: 150,
 	  left: 5,
 	  backgroundColor: 'rgba(255,255,255,0.2)',
   },
   
-	whiteText: {
-		color: '#fff',
-	},
-	bigText: {
-		fontSize: 30,
-		alignSelf: 'flex-end'
-	},
-  altitude: {
+  homepageBottomDisplay: {
+	  flexDirection: 'row',
+	  justifyContent: 'space-between',
+	  backgroundColor: homeInfoBg,
 	  bottom: 10,
-	  left: 10,
+	  left:10,
+	  right: 10
+  },
+ 
+  altitude: {
 	  width: 120,
 	  borderWidth: 3,
 	  borderColor: '#fff',
@@ -78,8 +142,6 @@ const S = StyleSheet.create({
 	  paddingRight: 5,
   },
   heading: {
-	  bottom: 10,
-	  right: 10,
 	  width: 72,
 	  backgroundColor: 'transparent',
   },
@@ -112,7 +174,7 @@ const S = StyleSheet.create({
 	  backgroundColor: '#eee',
   },
   
-  // MAPBOX //
+// MAPBOX //
   
   mapContainer: {
     flex: 1.1,
@@ -121,12 +183,26 @@ const S = StyleSheet.create({
   map: {
     flex: 1
   },
+
+// SETTINGS PAGE //
+  settingsRow: {
+	  backgroundColor: orange,
+	  padding: 20,
+	  marginBottom: 20,
+		shadowColor: "#000000",
+		shadowOpacity: 0.4,
+		shadowRadius: 5,
+		shadowOffset: SHDW_DIMS
+  },
+  
   test: {
 	  position:'absolute',
 	  bottom: 5,
 	  right: 5,
     backgroundColor: 'rgba(255,255,255,0.4)',
   }
+  
+
 });
 
 module.exports = S;

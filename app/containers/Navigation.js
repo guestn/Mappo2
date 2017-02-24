@@ -17,6 +17,8 @@ import { connect } from 'react-redux';
 import Home from './Home';
 import SettingsPage from './SettingsPage';
 import ArchivePage from './ArchivePage';
+import UnitsPage from './UnitsPage';
+
 
 const {
   CardStack: NavigationCardStack,
@@ -37,7 +39,8 @@ class Navigation extends Component {
         routes: [
         	{key: 'HomePage'}, 
         	{key: 'SettingsPage'},
-        	{key: 'ArchivePage'}
+        	{key: 'ArchivePage'},
+        	{key: 'UnitsPage'}
         ], 
       },
 	  }
@@ -146,7 +149,18 @@ class MyVerySimpleNavigator extends Component {
 		      {...this.props}
 		    />
 			);	
-		}			
+		}
+		if (sceneProps.scene.index === 3) {
+			return (
+		    <UnitsPage
+		    	route={sceneProps.scene.route}
+		      onPushRoute={(val) => this._onPushRoute(val)}
+		      onPopRoute={() => this._onPushRoute(0)}
+		      onExit={this.props.onExit}
+		      {...this.props}
+		    />
+			);	
+		}					
   }
 }
 

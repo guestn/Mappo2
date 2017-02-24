@@ -5,7 +5,6 @@ import {
 	Text,
 	TextInput,
 	Image,
-	TouchableHighlight,
 	TouchableOpacity
 } from 'react-native';
 import S from '../styles/Styles';
@@ -15,11 +14,7 @@ import { connect } from 'react-redux';
 import MenuButton from '../components/MenuButton';
 import SelectRow from '../components/SelectRow';
 
-
-import * as timeFunctions from '../lib/timeFunctions'
-
-
-class SettingsPage extends Component {
+class UnitsPage extends Component {
 	 constructor(props) {
     super(props)
     this.state = { 
@@ -30,30 +25,22 @@ class SettingsPage extends Component {
 		return (
 			<View style={S.container}>
 				<View style={S.menuBar}>
-					<Text style={S.menuText}>Settings</Text>
+					<Text style={S.menuText}>Units</Text>
 	        <MenuButton
 	          text="Back"
 	          icon="back"
 	          position={{top:25,left:0}}
-	          onPress={this.props.onPopRoute}
+	          onPress={() => this.props.onPushRoute(1)}
 	        />
 	        <MenuButton
-	          text="Archive"
-	          icon="archive"
+	          text="Close"
+	          icon="close"
 	          position={{top:25,right:10}}
-	          onPress={() => this.props.onPushRoute(2)}
+	          onPress={() => this.props.onPushRoute(0)}
 	        />
-
 		    </View>
 		    <View style={S.innerContainer}>
-
-	        <SelectRow 
-	        	text="units"
-	        	nav={(val) => this.props.onPushRoute(val)}
-	        />
-	        <SelectRow 
-	        	text="auto start/stop"
-	        />
+		    	
 				</View>
 			</View>
 		)
@@ -66,10 +53,4 @@ function mapStateToProps(state) {
 	}
 }
 
-export default connect(mapStateToProps)(SettingsPage)
-
-/*
-					<Text style={S.row}>
-	          Route: {this.props.route.key}
-	        </Text>
-*/
+export default connect(mapStateToProps)(UnitsPage)

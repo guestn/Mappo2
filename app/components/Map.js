@@ -174,7 +174,6 @@ class Map extends Component {
           logoIsHidden={true}
         />
       <ScrollView style={S.test}>
-        {this._renderButtons()}
       </ScrollView>
       </View>
     );
@@ -213,6 +212,7 @@ class Map extends Component {
   }
 }
 
+//put w{this._renderButtons()} inside the scrollview for the options
 
 /*
 <Text onPress={() => this._map && this._map.setCenterCoordinate(48.8589, 2.3447)}>

@@ -47,6 +47,7 @@ Archive items count: <span id="count">...</span>
 	database.ref('Archive').once('value', function(snap) {
   
     var archivedTracks = snap.val();
+    console.log('archivedTracks',archivedTracks)
     
     var archivedTracksArr = [];
     for( var i in archivedTracks ) {
