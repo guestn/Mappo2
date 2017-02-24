@@ -95,18 +95,23 @@ const S = StyleSheet.create({
 	homeContainer: {
 	  position:'relative',
     flex: 1,
-    //justifyContent: 'center',
-    //alignItems: 'center',
     backgroundColor: '#F5FCFF',
     padding:0,
-    //paddingTop: 100
+  },
+  
+  timeContainer: {
+	  backgroundColor: 'transparent',
+	  top: 20,
+	  left: 10
   },
   
   recorderContainer: {
 	  flexDirection:'row',
 	  alignItems: 'center',
-	  top: 20,
-	  left: 100,
+	  justifyContent: 'center',
+	  top: 10,
+	  left: 120,
+	  right:120,
 	  padding: 10,
 	  borderWidth: 0,
 	  borderColor: '#fff',
@@ -121,7 +126,7 @@ const S = StyleSheet.create({
   homepageTest: {
 	  top: 150,
 	  left: 5,
-	  backgroundColor: 'rgba(255,255,255,0.2)',
+	  backgroundColor: 'rgba(255,155,255,0.2)',
   },
   
   homepageBottomDisplay: {

@@ -139,6 +139,13 @@ class Home extends Component {
 	  this.setState({
 		  currentTracklog: initialTracklog
     });
+    AlertIOS.alert(
+	    'Current Tracklog Cleared',
+	    '',
+	    [
+		   {text: 'Okay, I understand', onPress: () => console.log('OK Pressed')},
+		 ],
+		);
   }
 
   handleRecorderClick = () => {
@@ -154,24 +161,24 @@ class Home extends Component {
 		 'Clear Current Tracklog?',
 		 [
 		   {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-		   {text: 'Clear', onPress: () => this.clearCurrentTracklog(false)},
+		   {text: 'Clear', onPress: () => this.clearCurrentTracklog(false), style: 'destructive'},
 			 {text: 'Clear & Archive', onPress: () => this.clearCurrentTracklog(true)},
 	   
 		 ],
 		);
   }
-  
  	
 	getArrayFromObjectAndConvert = (obj) => {
 		//Convert the position array into [[lat,lon],[lat,lon]...] for mapbox plotting
 		//magic ES6 to get array from obj.
 		let arr = Object.keys(obj).map( key => obj[key]);
-		
 		let coordArray = arr.map(function(x) {
 		  return [x.point.coords.latitude,x.point.coords.longitude]
 		})
-		
 		return coordArray;
+	}
+	
+	getDistanceFromHome = () => {
 		
 	}
   
@@ -185,9 +192,10 @@ class Home extends Component {
 
 				<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
 				
-
-
-				
+				<View style={[S.abs, S.timeContainer]}>
+					<Text style={[S.whiteText, S.text30]}>45:00</Text>
+				</View>
+								
 				<View style={[S.abs, S.recorderContainer]}>
 					<TouchableOpacity style={S.recordButton} onPress={this.handleRecorderClick}>
 							{ this.state.recording ? 
@@ -219,7 +227,6 @@ class Home extends Component {
           onPress={() => this.props.onPushRoute(1)}
 	      />
 
-	        
 	      <View style={[S.abs, S.homepageBottomDisplay]}>
 	        <View style={[S.altitude]}>
 	        	<Text style={[S.whiteText, S.text16]}>ALT.</Text>
@@ -234,7 +241,6 @@ class Home extends Component {
 					</View>
 	      </View>
 			
-				
 			</View>
 		)
 	}
