@@ -9,7 +9,7 @@
     <script src='https://www.gstatic.com/firebasejs/3.6.10/firebase.js'></script>
 
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
-
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css" />
 <script src='https://apis.google.com/js/platform.js'></script>
 
     <style>
@@ -20,24 +20,29 @@
 </head>
 <body>
   <form>
-    <div>
-      <input id="email" type="text" value="nicholas.guest@gmail.com" placeholder="Email...">
-    </div>
-    <div>
-      <input id="password" type="password" value="Bongo902!" placeholder="Password...">
-    </div>
-    <div>
-      <button id="sign-in">Sign In/Register</button>
-      <button id="sign-out">Sign Out</button>
+    <div class="row">
+    	<div class="medium-4 columns">
+      	<input id="email" type="text" value="nicholas.guest@gmail.com" placeholder="Email...">
+   
+				<input id="password" type="password" value="Bongo902!" placeholder="Password...">
+   
+				<button id="sign-in" class="success button">Sign In/Register</button>
+				<button id="sign-out" class="button">Sign Out</button>
+    	</div>
     </div>
   </form>
 <div id="map"></div>
-Archive items count: <span id="count">...</span>
-<select id="selector">
-</select>
+<div class="row">
 
-<div id="info"></div>
-
+	<div class="medium-4 columns">
+	
+		Archive items count: <span id="count">...</span>
+		<select id="selector">
+		</select>
+		
+		<div class="card"><div id="info" class="card-section"></div>
+  </div>
+</div>
 <!--Configure firebase-->
   <script>
     // Visit https://console.firebase.google.com/project/<your project id>/overview and click on "Add Firebase to your web app"
@@ -62,10 +67,16 @@ Archive items count: <span id="count">...</span>
   </script>
   
   <!--Handle page events-->
-  <script>    
-    document.querySelector('#sign-in').addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+  <script>
+	  window.onload = login()   
+    document.querySelector('#sign-in').addEventListener('click', function(e) {login(e)})
+	  
+	    
+	  function login(e) {
+		  if (e) {
+      	e.preventDefault();
+				e.stopPropagation();
+      }
       var email = document.querySelector('#email').value;
       var password = document.querySelector('#password').value
       var credential = firebase.auth.EmailAuthProvider.credential(email, password);
@@ -91,7 +102,7 @@ Archive items count: <span id="count">...</span>
       //  If there is no current user, log in with auth.signInWithCredential(credential)
       //  If there is a current user an it's anonymous, atttempt to link the new user with firebase.auth().currentUser.link(credential) 
       //  The user link will fail if the user has already been created, so catch the error and sign in.
-    });
+		}
     
     document.querySelector('#sign-out').addEventListener('click', function(e) {
       e.preventDefault();
@@ -114,16 +125,22 @@ function doStuff(firebase) {
 	console.log(database);
 	
 	var selectedTrack;
+	var archivedTracksArr = [];
+	var idArr = [];
 	
 	database.ref('Archive').once('value', function(snap) {
   
     var archivedTracks = snap.val();
     console.log('archivedTracks',archivedTracks)
     
-    var archivedTracksArr = [];
+		
     for( var i in archivedTracks ) {
     	archivedTracksArr.push(archivedTracks[i])
 		}
+		
+		idArr = Object.keys(archivedTracks).sort();
+		console.log(idArr)
+		
 		console.log('archivedTracksArr',archivedTracksArr)
 		archivedTracksArr.sort()
 
@@ -140,15 +157,16 @@ function doStuff(firebase) {
 		
 		selector.addEventListener('change', function(e){
 			selectedTrack = e.target.value
-			  parseData(archivedTracksArr[selectedTrack]);
-				createMetaData(archivedTracksArr[selectedTrack])
+			parseData(archivedTracksArr[selectedTrack]);
+			createMetaData(archivedTracksArr[selectedTrack])
 		})
 
 		// initialize with lastest track;
 		selectedTrack = archivedTracksArr.length -1;
+		selector.value = selectedTrack;
+
 		parseData(archivedTracksArr[selectedTrack]);
 		createMetaData(archivedTracksArr[selectedTrack])
-		selector.value = selectedTrack;
 
 
 
@@ -187,22 +205,42 @@ function doStuff(firebase) {
 		
 		var averageSpeed = getAverageSpeed(trackDistance, duration);
 		
+		var maxDistance = largestDistanceFromStart(parsedCurrentTrack);
+		
 		metaData = {
 			pointsCount: pointsCount,
-			start : startTime.format(),
-			end : endTime.format(),
+			start : startTime.format("DD-MM-YYYY HH:mm:ss"),
+			end : endTime.format("DD-MM-YYYY HH:mm:ss"),
 			duration : moment.utc(duration).format("HH:mm:ss"),
 			startEndDist : startEndDist,
 			trackDistance : trackDistance,
-			averageSpeed : averageSpeed
+			averageSpeed : averageSpeed,
+			maxDistance: maxDistance
 		}
 		
 		console.log(metaData)
 		var el = document.getElementById('info');
-		el.innerHTML = '<div>Points: ' + metaData.pointsCount + '</div><div>Start: ' + metaData.start + '</div><div>End: ' + metaData.end + '</div><div>Duration: ' + metaData.duration + '</div><div>start-end(m): ' + Math.floor(metaData.startEndDist) + '</div><div>track distance (m): ' + Math.floor(metaData.trackDistance) + '</div><div>average speed (km/h): ' + metaData.averageSpeed.toFixed(1) + '</div>';
+		el.innerHTML = '<div>Points: ' + metaData.pointsCount + '</div><div>Start: ' + metaData.start + '</div><div>End: ' + metaData.end + '</div><div>Duration: ' + metaData.duration + '</div><div>start-end(m): ' + Math.floor(metaData.startEndDist) + '</div><div>track distance (m): ' + Math.floor(metaData.trackDistance) + '</div><div>average speed (km/h): ' + metaData.averageSpeed.toFixed(1) + '</div><div>Max dist from start (m): ' + Math.floor(metaData.maxDistance) + '</div>';
 		
-		
-		
+		var delButton = document.createElement('button');
+		delButton.id='delete'
+		delButton.classList.add('button');
+		delButton.innerText = 'Delete';
+		el.appendChild(delButton);
+			
+		delButton.addEventListener('click', function(){
+			console.log('clocko!')
+			var result = window.confirm("Sure you want to delete?")
+			console.log(result, selectedTrack, archivedTracksArr);
+			if (result) {
+				var id = idArr[selectedTrack]
+				console.log(id);
+				//database.ref('Archive').child(id.toString()).once('',function(snap) {
+				database.ref('Archive').child(id).remove().then(function(){
+					console.log('removed')
+				})				
+			}
+		})
 	}
 
 	
@@ -218,7 +256,6 @@ function doStuff(firebase) {
 	function distanceBetweenTwoPoints(point1, point2) {
 		var lon1 = point1[0], lat1 = point1[1],
 				lon2 = point2[0], lat2 = point2[1]
-		console.log(lat1)
 		var R = 6371e3; // metres
 		var φ1 = toRadians(lat1);
 		var φ2 = toRadians(lat2);
@@ -243,8 +280,23 @@ function doStuff(firebase) {
 		return km/durationInHours;
 		
 	}
+	
+	function largestDistanceFromStart(parsedCurrentTrack) {
+		var distanceArray = [];
+		for (var i = 0; i < parsedCurrentTrack.length -1; i++) {
+			var pointDist = distanceBetweenTwoPoints(parsedCurrentTrack[0], parsedCurrentTrack[i+1])
+			console.log(pointDist);
+			distanceArray.push(pointDist);
+		}
+		console.log(distanceArray)
+		var max = distanceArray.reduce(function(a, b) {
+    	return Math.max(a, b);
+		});
+		return max;
 
+	}
 
+"https://api.mapbox.com/styles/v1/{username}/{style_id}/sprite.png?access_token=your-access-token"
 
 
 
@@ -271,52 +323,60 @@ function drawMap(parsedCurrentTrack){
 		(map.getLayer("route") != undefined) ? map.removeLayer("route") : null;
 		
 		map.addLayer({
-	        "id": "route",
-	        "type": "line",
-	        "source": {
-	            "type": "geojson",
-	            "data": {
-	                "type": "Feature",
-	                "properties": {},
-	                "geometry": {
-	                    "type": "LineString",
-	                    "coordinates": parsedCurrentTrack/*
-	[
-	                        [-122.48369693756104, 37.83381888486939],
-	                        [-122.48348236083984, 37.83317489144141],
-	                        [-122.48339653015138, 37.83270036637107],
-	                        [-122.48356819152832, 37.832056363179625],
-	                        [-122.48404026031496, 37.83114119107971],
-	                        [-122.48404026031496, 37.83049717427869],
-	                        [-122.48348236083984, 37.829920943955045],
-	                        [-122.48356819152832, 37.82954808664175],
-	                        [-122.48507022857666, 37.82944639795659],
-	                        [-122.48610019683838, 37.82880236636284],
-	                        [-122.48695850372314, 37.82931081282506],
-	                        [-122.48700141906738, 37.83080223556934],
-	                        [-122.48751640319824, 37.83168351665737],
-	                        [-122.48803138732912, 37.832158048267786],
-	                        [-122.48888969421387, 37.83297152392784],
-	                        [-122.48987674713133, 37.83263257682617],
-	                        [-122.49043464660643, 37.832937629287755],
-	                        [-122.49125003814696, 37.832429207817725],
-	                        [-122.49163627624512, 37.832564787218985],
-	                        [-122.49223709106445, 37.83337825839438],
-	                        [-122.49378204345702, 37.83368330777276]
-	
-	                    ]*/
-	                }
-	            }
-	        },
-	        "layout": {
-	            "line-join": "round",
-	            "line-cap": "round"
-	        },
-	        "paint": {
-	            "line-color": "#ffff00",
-	            "line-width": 8
-	        }
-	    });
+        "id": "route",
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": parsedCurrentTrack
+
+                }
+            }
+        },
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#ffff00",
+            "line-width": 8
+        }
+    });
+
+    
+       map.addLayer({
+        "id": "points",
+        "type": "symbol",
+        "source": {
+          "type": "geojson",
+          "data": {
+                "type": "Feature",
+							   "geometry": {
+							      "type": "Point",
+							      "coordinates": [parsedCurrentTrack[0][0], parsedCurrentTrack[0][1]]
+							    },
+							    "properties": {
+							      "marker-color": "#63b6e5",
+							      "marker-size": "large",
+							      "marker-symbol": "airfield"
+							    }
+							  
+            }
+        },
+
+      "layout": {
+            "icon-image": "{marker-symbol}-15",
+            "text-field": "{title}",
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top"
+        }
+
+    });
 	
 	    
 	});	    

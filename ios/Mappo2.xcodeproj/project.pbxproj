@@ -39,6 +39,7 @@
 		4D662FE51E5A8DFC004E5447 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D662FE41E5A8DFC004E5447 /* Mapbox.framework */; };
 		4D662FE61E5A8DFC004E5447 /* Mapbox.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4D662FE41E5A8DFC004E5447 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4D662FE81E5B6868004E5447 /* libRCTMapboxGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D662FD01E5A8D08004E5447 /* libRCTMapboxGL.a */; };
+		4D81B0F81E63996900413DB6 /* launchscreen-img.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4D81B0F71E63996900413DB6 /* launchscreen-img.jpg */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 /* End PBXBuildFile section */
@@ -293,6 +294,7 @@
 		2D02E4901E0B4A5D006451C7 /* Mappo2-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Mappo2-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D3737C01E5FA58F00400572 /* Orkney-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Orkney-Regular.otf"; sourceTree = "<group>"; };
 		4D662FE41E5A8DFC004E5447 /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mapbox.framework; sourceTree = "<group>"; };
+		4D81B0F71E63996900413DB6 /* launchscreen-img.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "launchscreen-img.jpg"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -535,6 +537,7 @@
 				00E356EF1AD99517003FC87E /* Mappo2Tests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				4D3737C01E5FA58F00400572 /* Orkney-Regular.otf */,
+				4D81B0F71E63996900413DB6 /* launchscreen-img.jpg */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -946,6 +949,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D81B0F81E63996900413DB6 /* launchscreen-img.jpg in Resources */,
 				4D3737C11E5FA58F00400572 /* Orkney-Regular.otf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
