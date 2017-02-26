@@ -21,10 +21,11 @@ import Map from '../components/Map';
 import MenuButton from '../components/MenuButton';
 
 
-import * as timeFunctions from '../lib/timeFunctions'
+import * as utilFunctions from '../lib/utilFunctions';
 
 const initialTracklog = { 
-	1487791194116: {
+	0: {
+			time: 0,
 	  	point: {
 	    	coords: {
 	    		latitude: 0,
@@ -32,7 +33,7 @@ const initialTracklog = {
 	  		}
 	  	}
 	  }
-	}
+	};
 
 
 class Home extends Component {
@@ -49,26 +50,40 @@ class Home extends Component {
     	},
     	recording: false,
     	recordInterval: 4,
+    	recordDuration: 0,
     	intervalId: null,
-    	currentTracklog: initialTracklog
+    	currentTracklog: initialTracklog,
+    	distanceFromHome: 0
  	  }
   }
   
   componentDidMount() {
+	  this.setState({
+		   currentTracklog: initialTracklog,
+	  })
 	  this.getCurrentPosition();
 	  this.getCurrentTracklog();
+	  this.getDistanceFromHome();
 	  // timer to collect position must be bound to component
 	  var count = 0;
 		  this.timer = setInterval(() => {
-				  // if recording is enabled, record every recordInterval seconds
+			// if recording is enabled, record every recordInterval seconds
 		  if (count >= this.state.recordInterval) {
 			  count = 0;
-				if (this.state.recording) { this.recordTracklogPoint() }
+				if (this.state.recording) this.recordTracklogPoint()
 				this.getCurrentPosition();
-
     	}
     	count ++;
-
+    	
+    	// get the duration of the current duration
+    	if (this.state.recording) {
+/*
+	    	const startPoint = this.getArrayFromObjectAndConvert(this.state.currentTracklog)[0];
+	    	console.log('startTime',startPoint)
+	    	const recordDurInSecs = ((new Date().getTime() - startPoint[2])/1000).toFixed(0);
+*/
+	    	this.setState({recordDuration: this.state.recordDuration + 1 })
+    	}
   	}, 1000);
   	this.timer;
   }
@@ -83,7 +98,10 @@ class Home extends Component {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition: position});
         console.log('updating real position')
+				console.log('this.state.currentTracklog',this.state.currentTracklog)
+
         this.getCurrentTracklog();
+        this.getDistanceFromHome();
       },
       (error) => alert(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -133,11 +151,12 @@ class Home extends Component {
 	  
 	  if (archiveIsTrue) this.props.addItemToArchive(this.state.currentTracklog);
 
-	  	  // clear async storage;
+	  // clear async storage;
 	  AsyncStorage.setItem('currentTracklog', JSON.stringify({}));
 
 	  this.setState({
-		  currentTracklog: initialTracklog
+		  currentTracklog: initialTracklog,
+		  recordDuration:  0
     });
     AlertIOS.alert(
 	    'Current Tracklog Cleared',
@@ -146,6 +165,7 @@ class Home extends Component {
 		   {text: 'Okay, I understand', onPress: () => console.log('OK Pressed')},
 		 ],
 		);
+		
   }
 
   handleRecorderClick = () => {
@@ -161,8 +181,8 @@ class Home extends Component {
 		 'Clear Current Tracklog?',
 		 [
 		   {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-		   {text: 'Clear', onPress: () => this.clearCurrentTracklog(false), style: 'destructive'},
-			 {text: 'Clear & Archive', onPress: () => this.clearCurrentTracklog(true)},
+		   {text: 'Clear without Saving', onPress: () => this.clearCurrentTracklog(false), style: 'destructive'},
+			 {text: 'Save & Clear', onPress: () => this.clearCurrentTracklog(true)},
 	   
 		 ],
 		);
@@ -173,18 +193,23 @@ class Home extends Component {
 		//magic ES6 to get array from obj.
 		let arr = Object.keys(obj).map( key => obj[key]);
 		let coordArray = arr.map(function(x) {
-		  return [x.point.coords.latitude,x.point.coords.longitude]
+		  return [x.point.coords.latitude,x.point.coords.longitude,x.time]
 		})
 		return coordArray;
 	}
 	
 	getDistanceFromHome = () => {
-		
+		var currentTracklogArr = this.getArrayFromObjectAndConvert(this.state.currentTracklog)
+		if (currentTracklogArr.length > 0) {
+			var res = utilFunctions.distanceBetweenTwoPoints(currentTracklogArr[0],currentTracklogArr[currentTracklogArr.length-1])
+			this.setState({distanceFromHome: res});
+		}
 	}
   
 	render() {
-		const altitude = this.state.initialPosition.coords ? this.state.initialPosition.coords.altitude.toFixed(2) : '...'
+		const altitude = this.state.initialPosition.coords ? this.state.initialPosition.coords.altitude.toFixed(0) : '...'
 		const heading = this.state.initialPosition.coords && (this.state.initialPosition.coords.heading =! -1) ? this.state.initialPosition.coords.heading : 0;
+		const distanceFromHome = this.state.distanceFromHome > 100 ? (this.state.distanceFromHome/1000).toFixed(1) : (this.state.distanceFromHome/1000).toFixed(2)
 		
 				
 		return (
@@ -193,7 +218,7 @@ class Home extends Component {
 				<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
 				
 				<View style={[S.abs, S.timeContainer]}>
-					<Text style={[S.whiteText, S.text30]}>45:00</Text>
+					<Text style={[S.whiteText, S.text30]}>{utilFunctions.secondsToString(this.state.recordDuration)}</Text>
 				</View>
 								
 				<View style={[S.abs, S.recorderContainer]}>
@@ -229,12 +254,16 @@ class Home extends Component {
 
 	      <View style={[S.abs, S.homepageBottomDisplay]}>
 	        <View style={[S.altitude]}>
-	        	<Text style={[S.whiteText, S.text16]}>ALT.</Text>
+	        	<View style={S.altitudeLegend}>
+	        		<Text style={[S.whiteText, S.text16]}>ALT.</Text><Text style={[S.orangeText, S.text16]}>M</Text>
+	        	</View>
 						<Text style={[S.whiteText, S.text40, S.alignRight]}>{altitude}</Text>
 					</View>
 	        <View style={[S.altitude]}>
-	        	<Text style={[S.whiteText, S.text16]}>HOME</Text>
-						<Text style={[S.whiteText, S.text40, S.alignRight]}>46.5</Text>
+	        	<View style={S.altitudeLegend}>
+	        		<Text style={[S.whiteText, S.text16]}>HOME&#8594;</Text><Text style={[S.orangeText, S.text16]}>KM</Text>
+	        	</View>
+						<Text style={[S.whiteText, S.text40, S.alignRight]}>{distanceFromHome}</Text>
 					</View>
 					<View style={[S.heading]}>
 						<Image style={[S.headingIcon, {transform: [{ rotate: heading + 'deg'}]}]} source={require('../assets/heading-icon.png')}/>

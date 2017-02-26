@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 import MenuButton from '../components/MenuButton';
 
-import * as timeFunctions from '../lib/timeFunctions'
+import * as utilFunctions from '../lib/utilFunctions';
 
 class ArchivePage extends Component {
 	 constructor(props) {

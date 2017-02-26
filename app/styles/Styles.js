@@ -32,6 +32,10 @@ const S = StyleSheet.create({
 		color: '#fff',
 		fontFamily: 'Orkney-Regular',
 	},
+	orangeText: {
+		color: orange,
+		fontFamily: 'Orkney-Regular',
+	},
 	bigText: {
 		fontSize: 30,
 		alignSelf: 'flex-end'
@@ -102,7 +106,7 @@ const S = StyleSheet.create({
   timeContainer: {
 	  backgroundColor: 'transparent',
 	  top: 20,
-	  left: 10
+	  left: 5
   },
   
   recorderContainer: {
@@ -145,6 +149,13 @@ const S = StyleSheet.create({
 	  backgroundColor: 'transparent',
 	  paddingLeft: 5,
 	  paddingRight: 5,
+	  //flexDirection: 'row',
+	  flexWrap: 'wrap'
+  },
+  altitudeLegend: {
+	  flexDirection:'row',
+	  flex:1, 
+	  justifyContent:'space-between'
   },
   heading: {
 	  width: 72,

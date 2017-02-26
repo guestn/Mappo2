@@ -25,7 +25,7 @@ const {
   StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
 
-import * as timeFunctions from '../lib/timeFunctions'
+import * as utilFunctions from '../lib/utilFunctions';
 
 import IdleTimerManager from 'react-native-idle-timer';
 

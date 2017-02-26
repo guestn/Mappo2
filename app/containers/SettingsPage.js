@@ -16,7 +16,7 @@ import MenuButton from '../components/MenuButton';
 import SelectRow from '../components/SelectRow';
 
 
-import * as timeFunctions from '../lib/timeFunctions'
+import * as utilFunctions from '../lib/utilFunctions';
 
 
 class SettingsPage extends Component {
