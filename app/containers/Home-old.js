@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 //import Mapbox, { MapView } from 'react-native-mapbox-gl';
-import BackgroundGeolocation from "react-native-background-geolocation";
 
 
 import S from '../styles/Styles';
@@ -26,69 +25,6 @@ import MenuButton from '../components/MenuButton';
 import * as utilFunctions from '../lib/utilFunctions';
 
 
-/*
-export class BGGeolocation extends Component {
-  componentWillMount() {
-
-    // This handler fires whenever bgGeo receives a location update.
-    BackgroundGeolocation.on('location', this.onLocation);
-
-    // This handler fires when movement states changes (stationary->moving; moving->stationary)
-    BackgroundGeolocation.on('motionchange', this.onMotionChange);
-
-    // Now configure the plugin.
-    BackgroundGeolocation.configure({
-      // Geolocation Config
-      desiredAccuracy: 0,
-      stationaryRadius: 2,
-      distanceFilter: 10,
-      // Activity Recognition
-      stopTimeout: 1,
-      activityRecognitionInterval: 0,
-      // Application config
-      debug: true, // <-- enable for debug sounds & notifications
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
-      startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-      // HTTP / SQLite config
-      url: 'http://posttestserver.com/post.php?dir=cordova-background-geolocation',
-      autoSync: true,         // <-- POST each location immediately to server
-      params: {               // <-- Optional HTTP params
-        "auth_token": "maybe_your_server_authenticates_via_token_YES?"
-      }
-    }, function(state) {
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
-
-      if (!state.enabled) {
-        BackgroundGeolocation.start(function() {
-          console.log("- Start success");
-        });
-      }
-    });
-  }
-  
-  componentDidMount() {
-	  BackgroundGeolocation.getCurrentPosition((location) => {
-		  console.log('current:',location)
-	  })
-  }
-  // You must remove listeners when your component unmounts
-  componentWillUnmount() {
-    // Remove BackgroundGeolocation listeners
-    BackgroundGeolocation.un('location', this.onLocation);
-    BackgroundGeolocation.un('motionchange', this.onMotionChange);
-  }
-  onLocation(location) {
-    console.log('- [js]location: ', JSON.stringify(location));
-  }
-  onMotionChange(location) {
-    console.log('- [js]motionchanged: ', JSON.stringify(location));
-  }
-  render() {
-     return <View></View>; 
-	}
-}
-*/
 
 
 const initialTracklog = { 
@@ -108,8 +44,15 @@ class Home extends Component {
 	 constructor(props) {
     super(props)
     this.state = { 
-    	initialPosition: null,
-     	recording: false,
+    	initialPosition: {
+	    	coords: {
+	    		latitude: 0,
+					longitude: 0,
+					altitude: 0,
+					heading: 0
+    		},
+    	},
+    	recording: false,
     	recordInterval: 4,
     	recordDuration: 0,
     	intervalId: null,
@@ -117,74 +60,35 @@ class Home extends Component {
     	distanceFromHome: 0
  	  }
   }
-  componentWillMount() {
-	  this.setState({
-		  initialPosition: null,
-     	recording: false,
-    	recordInterval: 4,
-    	recordDuration: 0,
-    	intervalId: null,
-    	currentTracklog: initialTracklog,
-    	distanceFromHome: 0
-	  })
-
-    // This handler fires whenever bgGeo receives a location update.
-    BackgroundGeolocation.on('location', this.onLocation);
-
-    // This handler fires when movement states changes (stationary->moving; moving->stationary)
-    BackgroundGeolocation.on('motionchange', this.onMotionChange);
-    
-    //BackgroundGeolocation.watchPosition(this.onLocation);	  
-
-
-    // Now configure the plugin.
-    BackgroundGeolocation.configure({
-      // Geolocation Config
-      desiredAccuracy: 0,
-      stationaryRadius: 0,
-      distanceFilter: 10,
-      // Activity Recognition
-      stopTimeout: 1,
-      activityRecognitionInterval: 0,
-      // Application config
-      debug: false, // <-- enable for debug sounds & notifications
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
-      startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-     
-    }, function(state) {
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
-
-      if (!state.enabled) {
-        BackgroundGeolocation.start(function() {
-          console.log("- Start success");
-        });
-      }
-    });
-  }
-
-  
   
   
   componentDidMount() {
-	  BackgroundGeolocation.getCurrentPosition((position) => {
-		  console.log('initial',position)
-		  this.setState({initialPosition: position});
+	  
+	
+	  this.setState({
+		   currentTracklog: initialTracklog,
 	  })
+	  this.getCurrentPosition();
 	  this.getCurrentTracklog();
 	  this.getDistanceFromHome();
-	  
 	  // timer to collect position must be bound to component
 	  var count = 0;
 		  this.timer = setInterval(() => {
 			// if recording is enabled, record every recordInterval seconds
 		  if (count >= this.state.recordInterval) {
 			  count = 0;
+				if (this.state.recording) this.recordTracklogPoint()
+				this.getCurrentPosition();
     	}
     	count ++;
     	
     	// get the duration of the current duration
     	if (this.state.recording) {
+/*
+	    	const startPoint = this.getArrayFromObjectAndConvert(this.state.currentTracklog)[0];
+	    	console.log('startTime',startPoint)
+	    	const recordDurInSecs = ((new Date().getTime() - startPoint[2])/1000).toFixed(0);
+*/
 	    	this.setState({recordDuration: this.state.recordDuration + 1 })
     	}
   	}, 1000);
@@ -193,34 +97,23 @@ class Home extends Component {
   
   componentWillUnmount() {
 		clearInterval(this.timer);
-		 // Remove BackgroundGeolocation listeners
-    BackgroundGeolocation.un('location', this.onLocation);
-    BackgroundGeolocation.un('motionchange', this.onMotionChange);
   }
   
-  // You must remove listeners when your component unmounts
-  onLocation = (position) => {
-    console.log('- [js]location: ', JSON.stringify(position));
-    console.log('heading',position.coords['heading'])
+  getCurrentPosition = () => {
+	  navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition: position});
+        console.log('updating real position')
+				console.log('this.state.currentTracklog',this.state.currentTracklog)
 
-    this.setState({initialPosition: position});
-    console.log('posn',this.state.initialPosition)
-    
-    if (this.state.recording) this.recordTracklogPoint()
-
-    
-    this.getCurrentTracklog();
-    this.getDistanceFromHome();
-
+        this.getCurrentTracklog();
+        this.getDistanceFromHome();
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
   }
-  
-  onMotionChange = (position) => {
-    console.log('- [js]motionchanged: ', JSON.stringify(position));
-    this.setState({initialPosition: position});
-    if (this.state.recording) this.recordTracklogPoint()
-
-  }
-  
   
   getCurrentTracklog = async () => {
 	  try {
@@ -270,8 +163,7 @@ class Home extends Component {
 
 	  this.setState({
 		  currentTracklog: initialTracklog,
-		  recordDuration:  0,
-		  distanceFromHome: 0
+		  recordDuration:  0
     });
     
     AlertIOS.alert(
@@ -323,15 +215,15 @@ class Home extends Component {
 	}
   
 	render() {
-		const altitude = (this.state.initialPosition != null && this.state.initialPosition.coords != undefined) ? this.state.initialPosition.coords.altitude.toFixed(0) : '...'
-		const heading = ((this.state.initialPosition != null && this.state.initialPosition.coords != undefined) && (this.state.initialPosition.coords.heading =! -1)) ? this.state.initialPosition.coords.heading : 0;
+		const altitude = this.state.initialPosition.coords ? this.state.initialPosition.coords.altitude.toFixed(0) : '...'
+		const heading = this.state.initialPosition.coords && (this.state.initialPosition.coords.heading =! -1) ? this.state.initialPosition.coords.heading : 0;
 		const distanceFromHome = this.state.distanceFromHome > 100 ? (this.state.distanceFromHome/1000).toFixed(1) : (this.state.distanceFromHome/1000).toFixed(2)
 		
 				
 		return (
 			<View style={S.homeContainer}>
 
-			<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
+				<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
 			<View style={[S.abs, S.timeContainer]}>
 					<Text style={[S.whiteText, S.text30]}>{utilFunctions.secondsToString(this.state.recordDuration)}</Text>
 				</View>
@@ -348,9 +240,10 @@ class Home extends Component {
 					<TouchableOpacity style={S.recordButton} onPress={this.handleClearClick}>
 						<Text style={[S.whiteText, {padding:5}]}>CLEAR</Text>						
 					</TouchableOpacity>
-					{ (this.state.initialPosition != null && this.state.initialPosition.coords != undefined) ?
+					{ (this.state.initialPosition != null) ?
 						<View>
 							<Text style={S.whiteText}>Lon: {this.state.initialPosition.coords.longitude}</Text>
+
 							<Text style={S.whiteText}>Lat: {this.state.initialPosition.coords.latitude}</Text>
 							<Text style={S.whiteText}>P: {this.getArrayFromObjectAndConvert(this.state.currentTracklog).length}</Text>
 						</View> :
@@ -379,7 +272,6 @@ class Home extends Component {
 						<Text style={[S.whiteText, S.text40, S.alignRight]}>{distanceFromHome}</Text>
 					</View>
 					<View style={[S.heading]}>
-						<Text style={[S.abs, S.orangeText, S.text20, S.alignRight]}>{heading}</Text>
 						<Image style={[S.headingIcon, {transform: [{ rotate: heading + 'deg'}]}]} source={require('../assets/heading-icon.png')}/>
 					</View>
 	      </View>

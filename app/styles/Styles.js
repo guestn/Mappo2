@@ -26,6 +26,7 @@ const S = StyleSheet.create({
   abs: {
 	  position:'absolute'
   },
+
   
 // TEXT //
 	whiteText: {
@@ -171,9 +172,10 @@ const S = StyleSheet.create({
 	  backgroundColor: 'coral'
   },
   scrollView: {
-	  flex: 0.8,
+	  //flex: 1,
 	  borderColor: 'red',
-	  borderWidth: 1
+	  borderWidth: 1,
+	  height: 200
   },
   listItem: {
 	  borderBottomColor: 'red',

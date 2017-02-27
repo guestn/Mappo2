@@ -12,10 +12,24 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css" />
 <script src='https://apis.google.com/js/platform.js'></script>
 
-    <style>
+<style>
         body { margin:0; padding:0;    font-family: 'Open Sans', sans-serif;
     font-weight: normal; }
-        #map { position:relative; top:0; height: 300px; width:100%; }
+        #map { 
+	        position:relative; 
+	        top:0; 
+	        height: 360px; 
+	        width:100%; 
+	        background: #f3f3f3;
+	        background-image: url(spinner.svg);
+	        background-repeat: no-repeat;
+	        animation: animatedBackground 2s linear infinite;
+	      }
+@keyframes animatedBackground {
+	0%, 100% { background-position: 48% 49%; }
+	50% { background-position: 52% 49%; }
+}
+
     </style>
 </head>
 <body>
@@ -179,16 +193,15 @@ function doStuff(firebase) {
 
 	function parseData(currentTrack) {
 		parsedCurrentTrack = []
-		for( var i in currentTrack ) {
-    	parsedCurrentTrack.push([currentTrack[i].point.coords.longitude, currentTrack[i].point.coords.latitude])
+		for( var i in currentTrack.points ) {
+    	parsedCurrentTrack.push([currentTrack.points[i].point.coords.longitude, currentTrack.points[i].point.coords.latitude])
 		}
-		console.log(parsedCurrentTrack);
 		pointsCount = parsedCurrentTrack.length;
 		drawMap(parsedCurrentTrack);
 	}
 
-	function createMetaData(archivedTrack) {
-		var time = Object.keys(archivedTrack);
+	function createMetaData(currentTrack) {
+		var time = Object.keys(currentTrack.points);
 		time.sort()
 			
 		var endTime = moment(parseInt(time[time.length-1]))
@@ -230,10 +243,12 @@ function doStuff(firebase) {
 			
 		delButton.addEventListener('click', function(){
 			console.log('clocko!')
+			var id = currentTrack.id;
+			console.log(id);
 			var result = window.confirm("Sure you want to delete?")
 			console.log(result, selectedTrack, archivedTracksArr);
 			if (result) {
-				var id = idArr[selectedTrack]
+				
 				console.log(id);
 				//database.ref('Archive').child(id.toString()).once('',function(snap) {
 				database.ref('Archive').child(id).remove().then(function(){
@@ -277,6 +292,9 @@ function doStuff(firebase) {
 	function getAverageSpeed(trackDistance, duration) {
 		var km = trackDistance/1000;
 		var durationInHours = duration/1000/60/60;
+		console.log('durationInHours',durationInHours)
+				console.log('distance',trackDistance)
+
 		return km/durationInHours;
 		
 	}
@@ -285,7 +303,6 @@ function doStuff(firebase) {
 		var distanceArray = [];
 		for (var i = 0; i < parsedCurrentTrack.length -1; i++) {
 			var pointDist = distanceBetweenTwoPoints(parsedCurrentTrack[0], parsedCurrentTrack[i+1])
-			console.log(pointDist);
 			distanceArray.push(pointDist);
 		}
 		console.log(distanceArray)
@@ -387,3 +404,25 @@ function drawMap(parsedCurrentTrack){
 
 </body>
 </html>
+
+<!--
+	The simpler method is called 'dynamic programming'... 
+You have: 
+0) array of points - P 
+1) Start point - P[0] 
+2) Landing point P[max] 
+3) Trying to find 3 other points in the middle to maximize the distance 
+Well 
+1) create an array D0, where D0[x] = distance(P[x], P[0]) 
+2) create an array D1, where D1[x] = max(D0[a] + distance(P[x], P[a])) over a in 0..x 
+- Array D1 now contains for every point 'x' maximum distance over 1 turnpoint to the point 'x' 
+3) create an array D2, where D2[x] = max(D1[a] + distance(P[x], P[a])) over a in 0..x 
+- Array D2 now contains for every point 'x' maximum distance over 2 turnpoints 
+4) Compute BestDistance = max(D2[a] + distance(P[max], P[a])) over a in 0..max 
+
+And that's it, BestDistance now contains the longest path from start to landing over 3 turnpoints. 
+
+Computing FAI triangle cannot be done this way...it's much more complicated to do it fast.
+
+	
+-->

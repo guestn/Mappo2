@@ -3,7 +3,17 @@ export function unixTimeToString(unixTime) {
 	var year = dateObj.getUTCFullYear();
 	var month = dateObj.getUTCMonth() + 1;
 	var day = dateObj.getUTCDate();
-	return day + '-' + month + '-' + year;
+
+	var dateNow = new Date();
+	var year0 = dateNow.getUTCFullYear();
+	var month0 = dateNow.getUTCMonth() + 1;
+	var day0 = dateNow.getUTCDate();
+	
+	if (year0 == year && month0 == month && day0 == day) {
+		return 'Today'
+	} else {
+		return day + '-' + month + '-' + year;
+	}
 }
 
 //Haversine formula: http://www.movable-type.co.uk/scripts/latlong.html
@@ -21,7 +31,6 @@ export function distanceBetweenTwoPoints(point1, point2) {
 	        Math.cos(φ1) * Math.cos(φ2) *
 	        Math.sin(Δλ/2) * Math.sin(Δλ/2);
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-	console.log(R * c)
 	return d = R * c;
 }
 

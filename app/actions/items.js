@@ -5,10 +5,10 @@ import database from '../database';
 
 export function fetchItemsFromArchive(searchStr) {
 	return (dispatch, getState) => { //give access to entire state;
-		return database.ref('/')
+		return database.ref('Archive')
 		.once('value', snap => {
       const items = snap.val();
-      console.log(items.archive	)
+      console.log(items	)
       //dispatch(getInviteFulfilledAction(invite))
 			dispatch(setSearchedItems({items:items}))
 		}).catch((err) => {
@@ -18,10 +18,10 @@ export function fetchItemsFromArchive(searchStr) {
 }
 
 export function setSearchedItems({items}) {
-	//console.log('items', items)
+	console.log('items', items)
 	return {
 		type: types.SET_SEARCHED_ITEMS,
-		items: items.archive
+		items: items
 	}
 }
 
@@ -45,7 +45,8 @@ export function addItemToArchive(item) {
 		let id = new Date().getTime();//Math.random().toString(36).substring(7)
 
 		database.ref('Archive').child(id).set(
-			item
+			{'id': id,
+			'points': item}
 		).then(() => {
 			console.log('SAVED TO ARCHIVE');
 			dispatch(setSearchedItems({item}))

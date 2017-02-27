@@ -35,8 +35,14 @@
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>THIS IS NEEDED FOR TRACKING, INNIT</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Orkney-Regular.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
+		<string>fetch</string>
 		<string>location</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -45,13 +51,11 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>NSMotionUsageDescription</key>
+	<string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Orkney-Regular.otf</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

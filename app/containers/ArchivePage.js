@@ -5,7 +5,7 @@ import {
 	Text,
 	TextInput,
 	Image,
-	TouchableHighlight
+	TouchableOpacity
 } from 'react-native';
 import S from '../styles/Styles';
 
@@ -29,6 +29,7 @@ class ArchivePage extends Component {
 			searching: true
 		})
 		this.props.fetchItemsFromArchive(this.state.textInput).then((res) => {
+			
       this.setState({searching: false })
     });
 	}
@@ -36,6 +37,7 @@ class ArchivePage extends Component {
 	getArrayFromObject = () => {
 		//magic ES6 to get array from obj.
 		let obj = Object.keys(this.props.searchedItems).map( key => this.props.searchedItems[key]);
+		console.log(obj)
 		return obj	
 	}
 
@@ -59,32 +61,29 @@ class ArchivePage extends Component {
 		    </View>
 
 	      <View style={S.innerContainer}>		
-					<Text>ArchivePage</Text>
-					<Text style={S.row}>
-	          Route: {this.props.route.key}
-	        </Text>
 	
 					<View style={S.searchContainer}>
 						<TextInput 
 							style={S.textInput} 
 							value={this.state.textInput} 
-							placeholder="Enter a movie or TV programme"
+							placeholder="Enter something"
 							onChangeText={(textInput) => this.setState({textInput})} 
 						/>
-						<TouchableHighlight style={S.button} onPress={() => this.onSearchPressed()}>
+						<TouchableOpacity style={S.button} onPress={() => this.onSearchPressed()}>
 							<Text>Search</Text>
-						</TouchableHighlight>
+						</TouchableOpacity>
 					</View>
 	
-					<ScrollView style={S.scrollView}>
+					<ScrollView style={[S.scrollView, {borderColor: 'red', borderWidth:2}]}>
 						{!this.state.searching && this.getArrayFromObject().map((item) => {
-	            return <TouchableHighlight key={item.id}  style={S.listItem} onPress={ () => this.props.navigate({ key: 'Detail', id: item.id}) }>
+							console.log(item)
+	            return <TouchableOpacity key={item.id}  style={S.settingsRow} onPress={ () => this.props.navigate({ key: 'Detail', id: item.id}) }>
 	            <View>
-	              <Text style={{}} >{timeFunctions.unixTimeToString(item.time)}</Text>
+	              <Text style={{}} >{utilFunctions.unixTimeToString(item.id)}</Text>
 	            </View>
-	          </TouchableHighlight>
+	          </TouchableOpacity>
 	          })}
-	          {this.state.searching ? <Text>Searching...</Text> : null }
+	          {this.state.searching ? <Text style={[S.whiteText, S.text30]}>Searching...</Text> : null }
 	
 					</ScrollView>
 				</View>

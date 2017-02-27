@@ -112,7 +112,7 @@ class Map extends Component {
 	  
 	 	if (JSON.stringify(nextProps.currentTracklog) !== JSON.stringify(this.props.currentTracklog)) {
  
-	  	console.log('NEWPROPS!',nextProps.currentTracklog)
+	  	//console.log('NEWPROPS!',nextProps.currentTracklog)
 	  	if (nextProps.currentTracklog == []) {
 		  	console.log('empty tracklog')
 		  	this.setState({
