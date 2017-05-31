@@ -137,15 +137,7 @@ export function  clearCurrentTracklog() {
 				type: types.CLEAR_CURRENT_TRACKLOG,
 				null
 			}
-			
-			//dispatch(newTracklogPoint({point:point}))
-		})
+					})
 	}
 }
-/*
-export function addRecipe() {
-	return {
-		type: types.ADD_ITEMS,
-	}
-}
-*/
+

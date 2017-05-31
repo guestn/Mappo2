@@ -167,15 +167,13 @@ const S = StyleSheet.create({
 	  height: 72,
   },
   
-  button: {
-	  padding: 10,
-	  backgroundColor: 'coral'
+  searchButton: {
+	  padding: 20,
+	  backgroundColor: orange,
+	  marginBottom: 20
   },
   scrollView: {
-	  //flex: 1,
-	  borderColor: 'red',
-	  borderWidth: 1,
-	  height: 200
+
   },
   listItem: {
 	  borderBottomColor: 'red',
@@ -185,7 +183,6 @@ const S = StyleSheet.create({
   },
   searchContainer: {
 	  flexDirection: 'column',
-	  backgroundColor: '#ddd'
   },
   textInput: {
 		height: 40,	  

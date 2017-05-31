@@ -54,5 +54,7 @@ fastlane/Preview.html
 fastlane/screenshots
 
 # specific files
-app/firebaseConfig.js
-app/config.js
+src/firebaseConfig.js
+src/config.js
+src_users/
+test/

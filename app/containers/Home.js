@@ -11,7 +11,6 @@ import {
 	AsyncStorage
 } from 'react-native';
 
-//import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import BackgroundGeolocation from "react-native-background-geolocation";
 
 
@@ -24,72 +23,6 @@ import MenuButton from '../components/MenuButton';
 
 
 import * as utilFunctions from '../lib/utilFunctions';
-
-
-/*
-export class BGGeolocation extends Component {
-  componentWillMount() {
-
-    // This handler fires whenever bgGeo receives a location update.
-    BackgroundGeolocation.on('location', this.onLocation);
-
-    // This handler fires when movement states changes (stationary->moving; moving->stationary)
-    BackgroundGeolocation.on('motionchange', this.onMotionChange);
-
-    // Now configure the plugin.
-    BackgroundGeolocation.configure({
-      // Geolocation Config
-      desiredAccuracy: 0,
-      stationaryRadius: 2,
-      distanceFilter: 10,
-      // Activity Recognition
-      stopTimeout: 1,
-      activityRecognitionInterval: 0,
-      // Application config
-      debug: true, // <-- enable for debug sounds & notifications
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
-      startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-      // HTTP / SQLite config
-      url: 'http://posttestserver.com/post.php?dir=cordova-background-geolocation',
-      autoSync: true,         // <-- POST each location immediately to server
-      params: {               // <-- Optional HTTP params
-        "auth_token": "maybe_your_server_authenticates_via_token_YES?"
-      }
-    }, function(state) {
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
-
-      if (!state.enabled) {
-        BackgroundGeolocation.start(function() {
-          console.log("- Start success");
-        });
-      }
-    });
-  }
-  
-  componentDidMount() {
-	  BackgroundGeolocation.getCurrentPosition((location) => {
-		  console.log('current:',location)
-	  })
-  }
-  // You must remove listeners when your component unmounts
-  componentWillUnmount() {
-    // Remove BackgroundGeolocation listeners
-    BackgroundGeolocation.un('location', this.onLocation);
-    BackgroundGeolocation.un('motionchange', this.onMotionChange);
-  }
-  onLocation(location) {
-    console.log('- [js]location: ', JSON.stringify(location));
-  }
-  onMotionChange(location) {
-    console.log('- [js]motionchanged: ', JSON.stringify(location));
-  }
-  render() {
-     return <View></View>; 
-	}
-}
-*/
-
 
 const initialTracklog = { 
 	0: {
@@ -130,14 +63,11 @@ class Home extends Component {
 
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
-
     // This handler fires when movement states changes (stationary->moving; moving->stationary)
     BackgroundGeolocation.on('motionchange', this.onMotionChange);
     
-    //BackgroundGeolocation.watchPosition(this.onLocation);	  
-
-
-    // Now configure the plugin.
+    //BackgroundGeolocation.watchPosition(this.onLocation);	  //create stream of datapoints
+    
     BackgroundGeolocation.configure({
       // Geolocation Config
       desiredAccuracy: 0,
@@ -162,9 +92,6 @@ class Home extends Component {
       }
     });
   }
-
-  
-  
   
   componentDidMount() {
 	  BackgroundGeolocation.getCurrentPosition((position) => {
@@ -198,7 +125,6 @@ class Home extends Component {
     BackgroundGeolocation.un('motionchange', this.onMotionChange);
   }
   
-  // You must remove listeners when your component unmounts
   onLocation = (position) => {
     console.log('- [js]location: ', JSON.stringify(position));
     console.log('heading',position.coords['heading'])
@@ -207,7 +133,6 @@ class Home extends Component {
     console.log('posn',this.state.initialPosition)
     
     if (this.state.recording) this.recordTracklogPoint()
-
     
     this.getCurrentTracklog();
     this.getDistanceFromHome();
@@ -256,7 +181,6 @@ class Home extends Component {
 
 		AsyncStorage.setItem('currentTracklog', JSON.stringify(this.state.currentTracklog));
 		 
-	  //this.props.recordTracklogPoint(this.state.initialPosition)
 	}
 
   clearCurrentTracklog = (archiveIsTrue) => {
@@ -331,8 +255,9 @@ class Home extends Component {
 		return (
 			<View style={S.homeContainer}>
 
-			<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
-			<View style={[S.abs, S.timeContainer]}>
+				<Map currentTracklog={this.getArrayFromObjectAndConvert(this.state.currentTracklog)}/>
+	
+				<View style={[S.abs, S.timeContainer]}>
 					<Text style={[S.whiteText, S.text30]}>{utilFunctions.secondsToString(this.state.recordDuration)}</Text>
 				</View>
 								

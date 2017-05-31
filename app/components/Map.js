@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
 
 import mapboxApiKey from '../config';
 
-//const accessToken = 'pk.eyJ1IjoiZ3Vlc3RuaWNob2xhcyIsImEiOiJjaXpkaGljeXgyNXB1Mnd0ZWc2M2ZhOGg1In0.DL7a1eiXduA15aWYWdGijg';
 Mapbox.setAccessToken(mapboxApiKey);
 
 class Map extends Component {
@@ -63,7 +62,6 @@ class Map extends Component {
     return location;
   };
   onOpenAnnotation = (annotation) => {
-    //console.log('onOpenAnnotation', annotation);
   };
   onRightAnnotationTapped = (e) => {
     console.log('onRightAnnotationTapped', e);
@@ -112,7 +110,6 @@ class Map extends Component {
 	  
 	 	if (JSON.stringify(nextProps.currentTracklog) !== JSON.stringify(this.props.currentTracklog)) {
  
-	  	//console.log('NEWPROPS!',nextProps.currentTracklog)
 	  	if (nextProps.currentTracklog == []) {
 		  	console.log('empty tracklog')
 		  	this.setState({

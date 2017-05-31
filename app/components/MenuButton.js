@@ -23,8 +23,6 @@ class MenuButton extends Component {
 				break;
 			
 			case 'archive': icon = require('../assets/archive-icon.png');
-
-
 	  }
 
     return (

@@ -46,8 +46,11 @@ export function secondsToString(seconds) {
 
 	hh = (hh == 0) ? '' : hh + ':';
 	//if (hh < 10) {hh = "0"+hh;}
-	if (mm < 10) {mm = "0"+mm +':';}
+	if (mm < 10) {
+		mm = "0"+mm +':';
+	} else {
+		mm == mm + ':';
+	}
 	if (ss < 10) {ss = "0"+ss;}
-	// This formats your string to HH:MM:SS
 	return hh+mm+ss;
 }

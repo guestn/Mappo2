@@ -67,9 +67,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(SettingsPage)
-
-/*
-					<Text style={S.row}>
-	          Route: {this.props.route.key}
-	        </Text>
-*/

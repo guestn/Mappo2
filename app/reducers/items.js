@@ -4,10 +4,6 @@ import * as types from '../actions/types';
 export const searchedItems = createReducer({}, {
 	[types.SET_SEARCHED_ITEMS](state, action) {
 		let newState = {};
-		console.log('ACTION',action.items)
-				console.log('STATE',state.items)
-		//action.items.forEach((item) => {
-		//})
 		return action.items;
 	}
 })

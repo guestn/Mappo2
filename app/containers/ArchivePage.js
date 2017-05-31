@@ -28,10 +28,14 @@ class ArchivePage extends Component {
 		this.setState({
 			searching: true
 		})
-		this.props.fetchItemsFromArchive(this.state.textInput).then((res) => {
+		this.props.fetchItemsFromArchive().then((res) => {
 			
       this.setState({searching: false })
     });
+	}
+	
+	expand = (id) => {
+		console.log(id)
 	}
 	
 	getArrayFromObject = () => {
@@ -63,21 +67,15 @@ class ArchivePage extends Component {
 	      <View style={S.innerContainer}>		
 	
 					<View style={S.searchContainer}>
-						<TextInput 
-							style={S.textInput} 
-							value={this.state.textInput} 
-							placeholder="Enter something"
-							onChangeText={(textInput) => this.setState({textInput})} 
-						/>
-						<TouchableOpacity style={S.button} onPress={() => this.onSearchPressed()}>
-							<Text>Search</Text>
+						<TouchableOpacity style={S.searchButton} onPress={() => this.onSearchPressed()}>
+							<Text style={[S.whiteText, S.text20]}>Get Archive</Text>
 						</TouchableOpacity>
 					</View>
 	
-					<ScrollView style={[S.scrollView, {borderColor: 'red', borderWidth:2}]}>
+					<ScrollView style={[S.scrollView]}>
 						{!this.state.searching && this.getArrayFromObject().map((item) => {
 							console.log(item)
-	            return <TouchableOpacity key={item.id}  style={S.settingsRow} onPress={ () => this.props.navigate({ key: 'Detail', id: item.id}) }>
+	            return <TouchableOpacity key={item.id}  style={S.settingsRow} onPress={ () => this.expand(item.id) }>
 	            <View>
 	              <Text style={{}} >{utilFunctions.unixTimeToString(item.id)}</Text>
 	            </View>
