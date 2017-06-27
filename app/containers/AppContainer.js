@@ -13,8 +13,6 @@ class AppContainer extends Component {
     super(props, context);
 
   }
-
-
 	
 	render() {
 		return (

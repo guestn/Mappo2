@@ -39,10 +39,4 @@ class MenuButton extends Component {
   }
 }
 
-
-function mapStateToProps(state) {
-	return {
-	}
-}
-
-export default connect(mapStateToProps)(MenuButton)
+export default MenuButton
